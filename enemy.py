@@ -110,7 +110,6 @@ class Enemy:
         if depth > 200:
             return
         if grid[last[0]][last[1]] == 0 and end == 0:
-            print("end0")
             return
         elif end == 2:
             if grid[last[0] + 1][last[1]] == end or grid[last[0] - 1][last[1]] == end \
@@ -118,8 +117,6 @@ class Enemy:
                     or grid[last[0]][last[1] - 1] == end:
                 if len(path) == 1 and end == 2:
                     self.plant = True
-                print("end", end)
-                print("path", path)
                 return
 
         grid[last[0]][last[1]] = 9

@@ -117,31 +117,38 @@ def game_init(surface, path, player_alg, en1_alg, en2_alg, en3_alg, scale):
     explosion_images = [explosion1_img, explosion2_img, explosion3_img]
 
     power_up_bomb_img = pygame.image.load('images/power_up/bomb.png')
-    power_up_bomb_img = pygame.transform.scale(power_up_bomb_img, (scale, scale))
+    power_up_bomb_img = pygame.transform.scale(
+        power_up_bomb_img, (scale, scale))
 
     power_up_fire_img = pygame.image.load('images/power_up/fire.png')
-    power_up_fire_img = pygame.transform.scale(power_up_fire_img, (scale, scale))
+    power_up_fire_img = pygame.transform.scale(
+        power_up_fire_img, (scale, scale))
 
     power_ups_images = [power_up_bomb_img, power_up_fire_img]
 
-    main(surface, scale, path, terrain_images, bomb_images, explosion_images, power_ups_images)
+    main(surface, scale, path, terrain_images,
+         bomb_images, explosion_images, power_ups_images)
 
 
 def draw(s, grid, tile_size, show_path, game_ended, terrain_images, bomb_images, explosion_images, power_ups_images):
     # s.fill(BACKGROUND_COLOR)
     for i in range(len(grid)):
         for j in range(len(grid[i])):
-            s.blit(terrain_images[grid[i][j]], (i * tile_size, j * tile_size, tile_size, tile_size))
+            s.blit(terrain_images[grid[i][j]], (i * tile_size,
+                   j * tile_size, tile_size, tile_size))
 
     for pu in power_ups:
-        s.blit(power_ups_images[pu.type.value], (pu.pos_x * tile_size, pu.pos_y * tile_size, tile_size, tile_size))
+        s.blit(power_ups_images[pu.type.value], (pu.pos_x *
+               tile_size, pu.pos_y * tile_size, tile_size, tile_size))
 
     for x in bombs:
-        s.blit(bomb_images[x.frame], (x.pos_x * tile_size, x.pos_y * tile_size, tile_size, tile_size))
+        s.blit(bomb_images[x.frame], (x.pos_x * tile_size,
+               x.pos_y * tile_size, tile_size, tile_size))
 
     for y in explosions:
         for x in y.sectors:
-            s.blit(explosion_images[y.frame], (x[0] * tile_size, x[1] * tile_size, tile_size, tile_size))
+            s.blit(explosion_images[y.frame], (x[0] * tile_size,
+                   x[1] * tile_size, tile_size, tile_size))
     if player.life:
         s.blit(player.animation[player.direction][player.frame],
                (player.pos_x * (tile_size / 4), player.pos_y * (tile_size / 4), tile_size, tile_size))
@@ -160,7 +167,8 @@ def draw(s, grid, tile_size, show_path, game_ended, terrain_images, bomb_images,
                                          [sek[0] * tile_size, sek[1] * tile_size, tile_size, tile_size], 1)
 
     if game_ended:
-        tf = font.render("Press ESC to go back to menu", False, (153, 153, 255))
+        tf = font.render("Press ESC to go back to menu",
+                         False, (153, 153, 255))
         s.blit(tf, (10, 10))
 
     pygame.display.update()
@@ -223,7 +231,8 @@ def main(s, tile_size, show_path, terrain_images, bomb_images, explosion_images,
                 else:
                     player.frame += 1
 
-        draw(s, grid, tile_size, show_path, game_ended, terrain_images, bomb_images, explosion_images, power_ups_images)
+        draw(s, grid, tile_size, show_path, game_ended, terrain_images,
+             bomb_images, explosion_images, power_ups_images)
 
         if not game_ended:
             game_ended = check_end_game()

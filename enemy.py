@@ -59,18 +59,21 @@ class Enemy:
             if self.plant:
                 bombs.append(self.plant_bomb(map))
                 self.plant = False
-                map[int(self.pos_x / Enemy.TILE_SIZE)][int(self.pos_y / Enemy.TILE_SIZE)] = 3
+                map[int(self.pos_x / Enemy.TILE_SIZE)
+                    ][int(self.pos_y / Enemy.TILE_SIZE)] = 3
             if self.algorithm is Algorithm.DFS:
                 self.dfs(self.create_grid(map, bombs, explosions, enemy))
             else:
-                self.dijkstra(self.create_grid_dijkstra(map, bombs, explosions, enemy))
+                self.dijkstra(self.create_grid_dijkstra(
+                    map, bombs, explosions, enemy))
 
         else:
             self.direction = self.movement_path[0]
             self.move(map, bombs, explosions, enemy)
 
     def plant_bomb(self, map):
-        b = Bomb(self.range, round(self.pos_x / Enemy.TILE_SIZE), round(self.pos_y / Enemy.TILE_SIZE), map, self)
+        b = Bomb(self.range, round(self.pos_x / Enemy.TILE_SIZE),
+                 round(self.pos_y / Enemy.TILE_SIZE), map, self)
         self.bomb_limit -= 1
         return b
 
@@ -84,7 +87,8 @@ class Enemy:
 
     def dfs(self, grid):
 
-        new_path = [[int(self.pos_x / Enemy.TILE_SIZE), int(self.pos_y / Enemy.TILE_SIZE)]]
+        new_path = [[int(self.pos_x / Enemy.TILE_SIZE),
+                     int(self.pos_y / Enemy.TILE_SIZE)]]
         depth = 0
         if self.bomb_limit == 0:
             self.dfs_rec(grid, 0, new_path, depth)
@@ -154,7 +158,8 @@ class Enemy:
 
         visited = []
         open_list = []
-        current = grid[int(self.pos_x / Enemy.TILE_SIZE)][int(self.pos_y / Enemy.TILE_SIZE)]
+        current = grid[int(self.pos_x / Enemy.TILE_SIZE)
+                       ][int(self.pos_y / Enemy.TILE_SIZE)]
         current.weight = current.base_weight
         new_path = []
         while True:
@@ -162,7 +167,7 @@ class Enemy:
             random.shuffle(self.dire)
             if (current.value == end and end == 0) or\
                     (end == 1 and (grid[current.x+1][current.y].value == 1 or grid[current.x-1][current.y].value == 1 or
-                grid[current.x][current.y+1].value == 1 or grid[current.x][current.y-1].value == 1)):
+                                   grid[current.x][current.y+1].value == 1 or grid[current.x][current.y-1].value == 1)):
                 new_path.append([current.x, current.y])
                 while True:
                     if current.parent is None:
@@ -193,19 +198,29 @@ class Enemy:
                             if grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].weight >\
                                     grid[current.x][current.y].weight \
                                     + grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].base_weight:
-                                grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].parent = current
-                                grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].weight = current.weight + grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].base_weight
-                                grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].direction = self.dire[i][2]
+                                grid[current.x + self.dire[i][0]][current.y +
+                                                                  self.dire[i][1]].parent = current
+                                grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].weight = current.weight + \
+                                    grid[current.x + self.dire[i][0]
+                                         ][current.y + self.dire[i][1]].base_weight
+                                grid[current.x + self.dire[i][0]][current.y +
+                                                                  self.dire[i][1]].direction = self.dire[i][2]
 
                         else:
-                            grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].parent = current
+                            grid[current.x + self.dire[i][0]][current.y +
+                                                              self.dire[i][1]].parent = current
                             grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].weight =\
-                                current.weight + grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].base_weight
-                            grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].direction = self.dire[i][2]
-                            open_list.append(grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]])
+                                current.weight + \
+                                grid[current.x + self.dire[i][0]
+                                     ][current.y + self.dire[i][1]].base_weight
+                            grid[current.x + self.dire[i][0]][current.y +
+                                                              self.dire[i][1]].direction = self.dire[i][2]
+                            open_list.append(
+                                grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]])
 
             if len(open_list) == 0:
-                self.path = [[int(self.pos_x / Enemy.TILE_SIZE), int(self.pos_y / Enemy.TILE_SIZE)]]
+                self.path = [[int(self.pos_x / Enemy.TILE_SIZE),
+                              int(self.pos_y / Enemy.TILE_SIZE)]]
                 return
 
             next_node = open_list[0]
@@ -217,10 +232,9 @@ class Enemy:
 
     def create_grid(self, map, bombs, explosions, enemys):
         grid = [[0] * len(map) for r in range(len(map))]
-
         # 0 - safe
         # 1 - unsafe
-        # 2 - destryable
+        # 2 - destroyable
         # 3 - unreachable
 
         for b in bombs:
@@ -246,7 +260,8 @@ class Enemy:
             elif not x.life:
                 continue
             else:
-                grid[int(x.pos_x / Enemy.TILE_SIZE)][int(x.pos_y / Enemy.TILE_SIZE)] = 2
+                grid[int(x.pos_x / Enemy.TILE_SIZE)
+                     ][int(x.pos_y / Enemy.TILE_SIZE)] = 2
 
         return grid
 
@@ -285,8 +300,10 @@ class Enemy:
             elif not x.life:
                 continue
             else:
-                grid[int(x.pos_x / Enemy.TILE_SIZE)][int(x.pos_y / Enemy.TILE_SIZE)].reach = False
-                grid[int(x.pos_x / Enemy.TILE_SIZE)][int(x.pos_y / Enemy.TILE_SIZE)].value = 1
+                grid[int(x.pos_x / Enemy.TILE_SIZE)
+                     ][int(x.pos_y / Enemy.TILE_SIZE)].reach = False
+                grid[int(x.pos_x / Enemy.TILE_SIZE)
+                     ][int(x.pos_y / Enemy.TILE_SIZE)].value = 1
         return grid
 
     def load_animations(self, en, scale):
@@ -353,4 +370,3 @@ class Enemy:
         self.animation.append(right)
         self.animation.append(back)
         self.animation.append(left)
-

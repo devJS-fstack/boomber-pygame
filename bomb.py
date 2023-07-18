@@ -11,7 +11,6 @@ class Bomb:
         self.get_range(map)
 
     def update(self, dt):
-
         self.time = self.time - dt
 
         if self.time < 1000:

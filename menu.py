@@ -14,7 +14,7 @@ WINDOW_SCALE = 0.75
 
 pygame.display.init()
 INFO = pygame.display.Info()
-TILE_SIZE = int(INFO.current_h * 0.035)
+TILE_SIZE = int(INFO.current_h * 0.04)
 WINDOW_SIZE = (13 * TILE_SIZE, 13 * TILE_SIZE)
 
 clock = None
@@ -53,7 +53,8 @@ def change_enemy3(value, c):
 
 
 def run_game():
-    game.game_init(surface, show_path, player_alg, en1_alg, en2_alg, en3_alg, TILE_SIZE)
+    game.game_init(surface, show_path, player_alg,
+                   en1_alg, en2_alg, en3_alg, TILE_SIZE)
 
 
 def main_background():
@@ -93,12 +94,17 @@ def menu_loop():
         title='Options'
     )
     characters = [("Player", Algorithm.PLAYER), ("DFS", Algorithm.DFS),
-                ("DIJKSTRA", Algorithm.DIJKSTRA), ("None", Algorithm.NONE)]
-    play_options.add.selector("Character 1", characters, onchange=change_player)
-    play_options.add.selector("Character 2", characters, onchange=change_enemy1)
-    play_options.add.selector("Character 3", characters, onchange=change_enemy2, default=1)
-    play_options.add.selector("Character 4", characters, onchange=change_enemy3)
-    play_options.add.selector("Show path", [("Yes", True), ("No", False)], onchange=change_path)
+                  ("DIJKSTRA", Algorithm.DIJKSTRA), ("None", Algorithm.NONE)]
+    play_options.add.selector(
+        "Character 1", characters, onchange=change_player)
+    play_options.add.selector(
+        "Character 2", characters, onchange=change_enemy1)
+    play_options.add.selector(
+        "Character 3", characters, onchange=change_enemy2, default=1)
+    play_options.add.selector(
+        "Character 4", characters, onchange=change_enemy3)
+    play_options.add.selector(
+        "Show path", [("Yes", True), ("No", False)], onchange=change_path)
 
     play_options.add.button('Back', pygame_menu.events.BACK)
     play_menu.add.button('Start', run_game)
@@ -165,4 +171,3 @@ def menu_loop():
 
 if __name__ == "__main__":
     menu_loop()
-

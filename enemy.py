@@ -52,7 +52,8 @@ class Enemy:
             self.frame += 1
 
     def make_move(self, map, bombs, explosions, enemy):
-
+        # print("path: ", self.path)
+        # print("move: ", self.movement_path)
         if not self.life:
             return
         if len(self.movement_path) == 0:
@@ -62,8 +63,10 @@ class Enemy:
                 map[int(self.pos_x / Enemy.TILE_SIZE)][int(self.pos_y / Enemy.TILE_SIZE)] = 3
             if self.algorithm is Algorithm.DFS:
                 self.dfs(self.create_grid(map, bombs, explosions, enemy))
-            else:
-                self.dijkstra(self.create_grid_dijkstra(map, bombs, explosions, enemy))
+            elif self.algorithm is Algorithm.A_STAR:
+                print("Let's move by a star")
+            # else:
+            #     self.dijkstra(self.create_grid_dijkstra(map, bombs, explosions, enemy))
 
         else:
             self.direction = self.movement_path[0]
@@ -92,13 +95,19 @@ class Enemy:
             self.dfs_rec(grid, 2, new_path, depth)
 
         self.path = new_path
+        # print("grid", grid)
 
     def dfs_rec(self, grid, end, path, depth):
 
         last = path[-1]
+        # testing = last[1] + self.direction[0][1]
+        # print("last: %v", str(testing))
+        # print("grid position", grid[last[0]][last[1]])
+        # print("limit bomb:", self.bomb_limit)
         if depth > 200:
             return
         if grid[last[0]][last[1]] == 0 and end == 0:
+            print("end0")
             return
         elif end == 2:
             if grid[last[0] + 1][last[1]] == end or grid[last[0] - 1][last[1]] == end \
@@ -106,13 +115,22 @@ class Enemy:
                     or grid[last[0]][last[1] - 1] == end:
                 if len(path) == 1 and end == 2:
                     self.plant = True
+                print("end", end)
+                print("path", path)
                 return
 
         grid[last[0]][last[1]] = 9
 
         random.shuffle(self.dire)
+        
+        # print("dire: ", self.dire)
+        # print("dir 1:", grid[last[0] + self.dire[0][0]][last[1] + self.dire[0][1]])
+        # print("dir 2:", grid[last[0] + self.dire[1][0]][last[1] + self.dire[1][1]])
+        # print("dir 3:", grid[last[0] + self.dire[2][0]][last[1] + self.dire[2][1]])
+        # print("dir 4:", grid[last[0] + self.dire[3][0]][last[1] + self.dire[3][1]])
 
-        # safe
+
+        # safe 
         if grid[last[0] + self.dire[0][0]][last[1] + self.dire[0][1]] == 0:
             path.append([last[0] + self.dire[0][0], last[1] + self.dire[0][1]])
             self.movement_path.append(self.dire[0][2])
@@ -222,6 +240,10 @@ class Enemy:
         # 1 - unsafe
         # 2 - destryable
         # 3 - unreachable
+
+        # base map
+        # 1 - rock
+        # 2 - box
 
         for b in bombs:
             b.get_range(map)

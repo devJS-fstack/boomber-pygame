@@ -4,7 +4,6 @@ from bomb import Bomb
 from node import Node
 from enums.algorithm import Algorithm
 
-
 class Enemy:
 
     dire = [[1, 0, 1], [0, 1, 0], [-1, 0, 3], [0, -1, 2]]
@@ -52,8 +51,6 @@ class Enemy:
             self.frame += 1
 
     def make_move(self, map, bombs, explosions, enemy):
-        # print("path: ", self.path)
-        # print("move: ", self.movement_path)
         if not self.life:
             return
         if len(self.movement_path) == 0:
@@ -95,15 +92,10 @@ class Enemy:
             self.dfs_rec(grid, 2, new_path, depth)
 
         self.path = new_path
-        # print("grid", grid)
 
     def dfs_rec(self, grid, end, path, depth):
 
         last = path[-1]
-        # testing = last[1] + self.direction[0][1]
-        # print("last: %v", str(testing))
-        # print("grid position", grid[last[0]][last[1]])
-        # print("limit bomb:", self.bomb_limit)
         if depth > 200:
             return
         if grid[last[0]][last[1]] == 0 and end == 0:
@@ -122,13 +114,6 @@ class Enemy:
         grid[last[0]][last[1]] = 9
 
         random.shuffle(self.dire)
-        
-        # print("dire: ", self.dire)
-        # print("dir 1:", grid[last[0] + self.dire[0][0]][last[1] + self.dire[0][1]])
-        # print("dir 2:", grid[last[0] + self.dire[1][0]][last[1] + self.dire[1][1]])
-        # print("dir 3:", grid[last[0] + self.dire[2][0]][last[1] + self.dire[2][1]])
-        # print("dir 4:", grid[last[0] + self.dire[3][0]][last[1] + self.dire[3][1]])
-
 
         # safe 
         if grid[last[0] + self.dire[0][0]][last[1] + self.dire[0][1]] == 0:
@@ -233,6 +218,9 @@ class Enemy:
             open_list.remove(next_node)
             current = next_node
 
+    def heuristic(node_a: Node, node_b: Node):
+        return abs(node_a.x - node_b.x) + abs(node_a.y - node_b.y)
+
     def create_grid(self, map, bombs, explosions, enemys):
         grid = [[0] * len(map) for r in range(len(map))]
 
@@ -275,6 +263,7 @@ class Enemy:
     def create_grid_dijkstra(self, map, bombs, explosions, enemys):
         grid = [[None] * len(map) for r in range(len(map))]
 
+        # value of map[i][j]
         # 0 - safe
         # 1 - destroyable
         # 2 - unreachable

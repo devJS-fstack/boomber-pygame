@@ -62,8 +62,8 @@ class Enemy:
                 self.dfs(self.create_grid(map, bombs, explosions, enemy))
             elif self.algorithm is Algorithm.A_STAR:
                 print("Let's move by a star")
-            # else:
-            #     self.dijkstra(self.create_grid_dijkstra(map, bombs, explosions, enemy))
+            else:
+                self.dijkstra(self.create_grid_dijkstra(map, bombs, explosions, enemy))
 
         else:
             self.direction = self.movement_path[0]
@@ -99,7 +99,6 @@ class Enemy:
         if depth > 200:
             return
         if grid[last[0]][last[1]] == 0 and end == 0:
-            print("end0")
             return
         elif end == 2:
             if grid[last[0] + 1][last[1]] == end or grid[last[0] - 1][last[1]] == end \
@@ -107,8 +106,6 @@ class Enemy:
                     or grid[last[0]][last[1] - 1] == end:
                 if len(path) == 1 and end == 2:
                     self.plant = True
-                print("end", end)
-                print("path", path)
                 return
 
         grid[last[0]][last[1]] = 9
@@ -161,6 +158,7 @@ class Enemy:
         current.weight = current.base_weight
         new_path = []
         while True:
+            print("current: ", current.x, "-", current.y, "-", current.heuristic_value)
             visited.append(current)
             random.shuffle(self.dire)
             if (current.value == end and end == 0) or\
@@ -188,6 +186,7 @@ class Enemy:
                 self.path = new_path
                 return
 
+            # path move
             for i in range(len(self.dire)):
                 if current.x + self.dire[i][0] < len(grid) and current.y + self.dire[i][1] < len(grid):
                     if grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].reach \
@@ -199,7 +198,6 @@ class Enemy:
                                 grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].parent = current
                                 grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].weight = current.weight + grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].base_weight
                                 grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].direction = self.dire[i][2]
-
                         else:
                             grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].parent = current
                             grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].weight =\
@@ -213,12 +211,12 @@ class Enemy:
 
             next_node = open_list[0]
             for n in open_list:
-                if n.weight < next_node.weight:
+                if (n.weight + n.heuristic_value) < (next_node.weight + next_node.heuristic_value):
                     next_node = n
             open_list.remove(next_node)
             current = next_node
 
-    def heuristic(node_a: Node, node_b: Node):
+    def heuristic(self, node_a: Node, node_b: Node):
         return abs(node_a.x - node_b.x) + abs(node_a.y - node_b.y)
 
     def create_grid(self, map, bombs, explosions, enemys):
@@ -263,7 +261,7 @@ class Enemy:
     def create_grid_dijkstra(self, map, bombs, explosions, enemys):
         grid = [[None] * len(map) for r in range(len(map))]
 
-        # value of map[i][j]
+        # value of grid[i][j]
         # 0 - safe
         # 1 - destroyable
         # 2 - unreachable
@@ -298,6 +296,18 @@ class Enemy:
             else:
                 grid[int(x.pos_x / Enemy.TILE_SIZE)][int(x.pos_y / Enemy.TILE_SIZE)].reach = False
                 grid[int(x.pos_x / Enemy.TILE_SIZE)][int(x.pos_y / Enemy.TILE_SIZE)].value = 1
+
+    
+        for i in range(len(map)):
+            for j in range(len(map)):
+                for x in enemys:
+                    if x == self:
+                        continue
+                    elif not x.life:
+                        continue
+                    else:
+                        grid[i][j].heuristic_value += self.heuristic(grid[i][j], grid[int(x.pos_x / Enemy.TILE_SIZE)][int(x.pos_y / Enemy.TILE_SIZE)])
+
         return grid
 
     def load_animations(self, en, scale):

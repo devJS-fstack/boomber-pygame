@@ -1,6 +1,7 @@
 class Node:
 
     parent = None
+    heuristic_value = None
     weight = None
     direction = 1
 
@@ -10,4 +11,5 @@ class Node:
         self.reach = reach
         self.base_weight = base_weight
         self.value = value
+        self.heuristic_value = 0
 

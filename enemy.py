@@ -4,6 +4,7 @@ from bomb import Bomb
 from node import Node
 from enums.algorithm import Algorithm
 
+
 class Enemy:
 
     dire = [[1, 0, 1], [0, 1, 0], [-1, 0, 3], [0, -1, 2]]
@@ -57,20 +58,23 @@ class Enemy:
             if self.plant:
                 bombs.append(self.plant_bomb(map))
                 self.plant = False
-                map[int(self.pos_x / Enemy.TILE_SIZE)][int(self.pos_y / Enemy.TILE_SIZE)] = 3
+                map[int(self.pos_x / Enemy.TILE_SIZE)
+                    ][int(self.pos_y / Enemy.TILE_SIZE)] = 3
             if self.algorithm is Algorithm.DFS:
                 self.dfs(self.create_grid(map, bombs, explosions, enemy))
             elif self.algorithm is Algorithm.A_STAR:
                 print("Let's move by a star")
             else:
-                self.dijkstra(self.create_grid_dijkstra(map, bombs, explosions, enemy))
+                self.dijkstra(self.create_grid_dijkstra(
+                    map, bombs, explosions, enemy))
 
         else:
             self.direction = self.movement_path[0]
             self.move(map, bombs, explosions, enemy)
 
     def plant_bomb(self, map):
-        b = Bomb(self.range, round(self.pos_x / Enemy.TILE_SIZE), round(self.pos_y / Enemy.TILE_SIZE), map, self)
+        b = Bomb(self.range, round(self.pos_x / Enemy.TILE_SIZE),
+                 round(self.pos_y / Enemy.TILE_SIZE), map, self)
         self.bomb_limit -= 1
         return b
 
@@ -84,7 +88,8 @@ class Enemy:
 
     def dfs(self, grid):
 
-        new_path = [[int(self.pos_x / Enemy.TILE_SIZE), int(self.pos_y / Enemy.TILE_SIZE)]]
+        new_path = [[int(self.pos_x / Enemy.TILE_SIZE),
+                     int(self.pos_y / Enemy.TILE_SIZE)]]
         depth = 0
         if self.bomb_limit == 0:
             self.dfs_rec(grid, 0, new_path, depth)
@@ -112,7 +117,7 @@ class Enemy:
 
         random.shuffle(self.dire)
 
-        # safe 
+        # safe
         if grid[last[0] + self.dire[0][0]][last[1] + self.dire[0][1]] == 0:
             path.append([last[0] + self.dire[0][0], last[1] + self.dire[0][1]])
             self.movement_path.append(self.dire[0][2])
@@ -154,16 +159,16 @@ class Enemy:
 
         visited = []
         open_list = []
-        current = grid[int(self.pos_x / Enemy.TILE_SIZE)][int(self.pos_y / Enemy.TILE_SIZE)]
+        current = grid[int(self.pos_x / Enemy.TILE_SIZE)
+                       ][int(self.pos_y / Enemy.TILE_SIZE)]
         current.weight = current.base_weight
         new_path = []
         while True:
-            print("current: ", current.x, "-", current.y, "-", current.heuristic_value)
             visited.append(current)
             random.shuffle(self.dire)
             if (current.value == end and end == 0) or\
                     (end == 1 and (grid[current.x+1][current.y].value == 1 or grid[current.x-1][current.y].value == 1 or
-                grid[current.x][current.y+1].value == 1 or grid[current.x][current.y-1].value == 1)):
+                                   grid[current.x][current.y+1].value == 1 or grid[current.x][current.y-1].value == 1)):
                 new_path.append([current.x, current.y])
                 while True:
                     if current.parent is None:
@@ -181,7 +186,7 @@ class Enemy:
                             self.movement_path.append(0)
                         elif new_path[xd][1] - new_path[xd + 1][1] == 1:
                             self.movement_path.append(2)
-                if len(new_path) == 1 and end == 1:
+                if len(new_path) >= 1 and end == 1:
                     self.plant = True
                 self.path = new_path
                 return
@@ -191,22 +196,21 @@ class Enemy:
                 if current.x + self.dire[i][0] < len(grid) and current.y + self.dire[i][1] < len(grid):
                     if grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].reach \
                             and grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]] not in visited:
-                        if grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]] in open_list:
-                            if grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].weight >\
-                                    grid[current.x][current.y].weight \
-                                    + grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].base_weight:
-                                grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].parent = current
-                                grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].weight = current.weight + grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].base_weight
-                                grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].direction = self.dire[i][2]
-                        else:
-                            grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].parent = current
+                        if grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]] not in open_list:
+                            grid[current.x + self.dire[i][0]][current.y +
+                                                              self.dire[i][1]].parent = current
                             grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].weight =\
-                                current.weight + grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].base_weight
-                            grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].direction = self.dire[i][2]
-                            open_list.append(grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]])
+                                current.weight + \
+                                grid[current.x + self.dire[i][0]
+                                     ][current.y + self.dire[i][1]].base_weight
+                            grid[current.x + self.dire[i][0]][current.y +
+                                                              self.dire[i][1]].direction = self.dire[i][2]
+                            open_list.append(
+                                grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]])
 
             if len(open_list) == 0:
-                self.path = [[int(self.pos_x / Enemy.TILE_SIZE), int(self.pos_y / Enemy.TILE_SIZE)]]
+                self.path = [[int(self.pos_x / Enemy.TILE_SIZE),
+                              int(self.pos_y / Enemy.TILE_SIZE)]]
                 return
 
             next_node = open_list[0]
@@ -254,7 +258,8 @@ class Enemy:
             elif not x.life:
                 continue
             else:
-                grid[int(x.pos_x / Enemy.TILE_SIZE)][int(x.pos_y / Enemy.TILE_SIZE)] = 2
+                grid[int(x.pos_x / Enemy.TILE_SIZE)
+                     ][int(x.pos_y / Enemy.TILE_SIZE)] = 2
 
         return grid
 
@@ -294,10 +299,11 @@ class Enemy:
             elif not x.life:
                 continue
             else:
-                grid[int(x.pos_x / Enemy.TILE_SIZE)][int(x.pos_y / Enemy.TILE_SIZE)].reach = False
-                grid[int(x.pos_x / Enemy.TILE_SIZE)][int(x.pos_y / Enemy.TILE_SIZE)].value = 1
+                grid[int(x.pos_x / Enemy.TILE_SIZE)
+                     ][int(x.pos_y / Enemy.TILE_SIZE)].reach = False
+                grid[int(x.pos_x / Enemy.TILE_SIZE)
+                     ][int(x.pos_y / Enemy.TILE_SIZE)].value = 1
 
-    
         for i in range(len(map)):
             for j in range(len(map)):
                 for x in enemys:
@@ -306,7 +312,8 @@ class Enemy:
                     elif not x.life:
                         continue
                     else:
-                        grid[i][j].heuristic_value += self.heuristic(grid[i][j], grid[int(x.pos_x / Enemy.TILE_SIZE)][int(x.pos_y / Enemy.TILE_SIZE)])
+                        grid[i][j].heuristic_value += self.heuristic(grid[i][j], grid[int(
+                            x.pos_x / Enemy.TILE_SIZE)][int(x.pos_y / Enemy.TILE_SIZE)])
 
         return grid
 
@@ -374,4 +381,3 @@ class Enemy:
         self.animation.append(right)
         self.animation.append(back)
         self.animation.append(left)
-

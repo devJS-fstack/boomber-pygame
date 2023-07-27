@@ -186,7 +186,7 @@ class Enemy:
                             self.movement_path.append(0)
                         elif new_path[xd][1] - new_path[xd + 1][1] == 1:
                             self.movement_path.append(2)
-                if len(new_path) >= 1 and end == 1:
+                if len(new_path) > 0 and end == 1:
                     self.plant = True
                 self.path = new_path
                 return

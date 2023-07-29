@@ -195,18 +195,18 @@ class Enemy:
             for i in range(len(self.dire)):
                 if current.x + self.dire[i][0] < len(grid) and current.y + self.dire[i][1] < len(grid):
                     if grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].reach \
-                            and grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]] not in visited:
-                        if grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]] not in open_list:
-                            grid[current.x + self.dire[i][0]][current.y +
-                                                              self.dire[i][1]].parent = current
-                            grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].weight =\
-                                current.weight + \
-                                grid[current.x + self.dire[i][0]
-                                     ][current.y + self.dire[i][1]].base_weight
-                            grid[current.x + self.dire[i][0]][current.y +
-                                                              self.dire[i][1]].direction = self.dire[i][2]
-                            open_list.append(
-                                grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]])
+                    and grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]] not in visited \
+                    and grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]] not in open_list:
+                        grid[current.x + self.dire[i][0]][current.y +
+                                                            self.dire[i][1]].parent = current
+                        grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].weight =\
+                            current.weight + \
+                            grid[current.x + self.dire[i][0]
+                                    ][current.y + self.dire[i][1]].base_weight
+                        grid[current.x + self.dire[i][0]][current.y +
+                                                            self.dire[i][1]].direction = self.dire[i][2]
+                        open_list.append(
+                            grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]])
 
             if len(open_list) == 0:
                 self.path = [[int(self.pos_x / Enemy.TILE_SIZE),

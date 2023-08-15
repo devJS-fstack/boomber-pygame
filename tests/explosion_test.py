@@ -10,7 +10,7 @@ class MyTestCase(unittest.TestCase):
 
     def setUp(self):
         game.enemy_list.append(Enemy(11, 11, Algorithm.DFS))
-        game.enemy_list.append(Enemy(1, 11, Algorithm.DIJKSTRA))
+        game.enemy_list.append(Enemy(1, 11, Algorithm.A_STAR))
         game.player = Player()
 
     def test_explosion_sectors(self):

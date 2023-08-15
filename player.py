@@ -21,7 +21,6 @@ class Player:
     def move(self, dx, dy, grid, enemys, power_ups):
         tempx = int(self.pos_x / Player.TILE_SIZE)
         tempy = int(self.pos_y / Player.TILE_SIZE)
-
         map = []
 
         for i in range(len(grid)):
@@ -35,7 +34,8 @@ class Player:
             elif not x.life:
                 continue
             else:
-                map[int(x.pos_x / Player.TILE_SIZE)][int(x.pos_y / Player.TILE_SIZE)] = 2
+                map[int(x.pos_x / Player.TILE_SIZE)
+                    ][int(x.pos_y / Player.TILE_SIZE)] = 2
 
         if self.pos_x % Player.TILE_SIZE != 0 and dx == 0:
             if self.pos_x % Player.TILE_SIZE == 1:
@@ -76,7 +76,8 @@ class Player:
                 self.consume_power_up(pu, power_ups)
 
     def plant_bomb(self, map):
-        b = Bomb(self.range, round(self.pos_x / Player.TILE_SIZE), round(self.pos_y / Player.TILE_SIZE), map, self)
+        b = Bomb(self.range, round(self.pos_x / Player.TILE_SIZE),
+                 round(self.pos_y / Player.TILE_SIZE), map, self)
         return b
 
     def check_death(self, exp):

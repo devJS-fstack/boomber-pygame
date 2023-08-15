@@ -63,9 +63,7 @@ class Enemy:
             if self.algorithm is Algorithm.DFS:
                 self.dfs(self.create_grid(map, bombs, explosions, enemy))
             elif self.algorithm is Algorithm.A_STAR:
-                print("Let's move by a star")
-            else:
-                self.dijkstra(self.create_grid_dijkstra(
+                self.a_star(self.create_grid_a_star(
                     map, bombs, explosions, enemy))
 
         else:
@@ -109,7 +107,7 @@ class Enemy:
             if grid[last[0] + 1][last[1]] == end or grid[last[0] - 1][last[1]] == end \
                     or grid[last[0]][last[1] + 1] == end \
                     or grid[last[0]][last[1] - 1] == end:
-                if len(path) == 1 and end == 2:
+                if len(path) == 1:
                     self.plant = True
                 return
 
@@ -151,7 +149,7 @@ class Enemy:
         depth += 1
         self.dfs_rec(grid, end, path, depth)
 
-    def dijkstra(self, grid):
+    def a_star(self, grid):
 
         end = 1
         if self.bomb_limit == 0:
@@ -186,7 +184,7 @@ class Enemy:
                             self.movement_path.append(0)
                         elif new_path[xd][1] - new_path[xd + 1][1] == 1:
                             self.movement_path.append(2)
-                if len(new_path) > 0 and end == 1:
+                if len(new_path) == 1 and end == 1:
                     self.plant = True
                 self.path = new_path
                 return
@@ -195,16 +193,16 @@ class Enemy:
             for i in range(len(self.dire)):
                 if current.x + self.dire[i][0] < len(grid) and current.y + self.dire[i][1] < len(grid):
                     if grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].reach \
-                    and grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]] not in visited \
-                    and grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]] not in open_list:
+                            and grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]] not in visited \
+                            and grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]] not in open_list:
                         grid[current.x + self.dire[i][0]][current.y +
-                                                            self.dire[i][1]].parent = current
+                                                          self.dire[i][1]].parent = current
                         grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]].weight =\
                             current.weight + \
                             grid[current.x + self.dire[i][0]
-                                    ][current.y + self.dire[i][1]].base_weight
+                                 ][current.y + self.dire[i][1]].base_weight
                         grid[current.x + self.dire[i][0]][current.y +
-                                                            self.dire[i][1]].direction = self.dire[i][2]
+                                                          self.dire[i][1]].direction = self.dire[i][2]
                         open_list.append(
                             grid[current.x + self.dire[i][0]][current.y + self.dire[i][1]])
 
@@ -263,7 +261,7 @@ class Enemy:
 
         return grid
 
-    def create_grid_dijkstra(self, map, bombs, explosions, enemys):
+    def create_grid_a_star(self, map, bombs, explosions, enemys):
         grid = [[None] * len(map) for r in range(len(map))]
 
         # value of grid[i][j]
